@@ -1,9 +1,6 @@
 https://gabriela-chirinos.github.io/nailSalon/
 
 
-![Uploading ScreenRecording2026-04-18at12.45.20AM-ezgif.com-video-to-gif-converter.gif…]()
-
-
 Project Overview: Lumière Premium Nail Salon
 
 This project is a high-fidelity, single-page landing page designed for Lumière, a luxury nail studio. It was developed with a focus on a "quiet luxury" aesthetic, utilizing a minimalist layout and a sophisticated palette of bone, sand, and deep mauve tones.
