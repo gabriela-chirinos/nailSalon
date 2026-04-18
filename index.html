@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumière — Premium Nail Atelier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Tokens — Light bone/sand palette ───────────── */
+    :root {
+      --bg:          #f4efe6;   /* warm bone */
+      --bg-2:        #ede7dc;   /* sand */
+      --bg-3:        #e5ddd0;   /* deeper sand */
+      --bg-dark:     #1a1612;   /* for hero overlay bottom */
+
+      --ink:         #28211a;   /* near-black warm */
+      --ink-2:       #4a4138;   /* medium dark */
+      --ink-3:       #7a6f64;   /* muted */
+      --ink-4:       #a89e94;   /* faint */
+
+      --mauve:       #9b6b7a;
+      --mauve-deep:  #6b3d4e;
+      --mauve-light: #c4949f;
+
+      --gold:        #8a6a3a;
+      --gold-dim:    #b8995a;
+      --gold-light:  #d4b87a;
+
+      --border:      rgba(40,33,26,0.1);
+      --border-mid:  rgba(40,33,26,0.18);
+
+      --font-serif:  'Cormorant Garamond', Georgia, serif;
+      --font-sans:   'DM Sans', system-ui, sans-serif;
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+      --nav-h:       72px;
+
+      /* card tokens (matching shadcn card spirit) */
+      --card-bg:     #faf7f2;
+      --card-border: rgba(40,33,26,0.12);
+      --card-shadow: 0 1px 3px rgba(40,33,26,0.08), 0 4px 16px rgba(40,33,26,0.06);
+    }
+
+    /* ── Base ────────────────────────────────────────── */
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 4rem);
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(244, 239, 230, 0.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav__logo {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f4efe6;
+      text-decoration: none;
+      transition: color 0.4s;
+    }
+    .nav.scrolled .nav__logo { color: var(--ink); }
+
+    .nav__links {
+      display: none;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    @media (min-width: 768px) { .nav__links { display: flex; } }
+
+    .nav__links a {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(244,239,230,0.75);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .nav.scrolled .nav__links a { color: var(--ink-3); }
+    .nav__links a:hover { color: var(--gold-light) !important; }
+    .nav.scrolled .nav__links a:hover { color: var(--mauve) !important; }
+
+    .nav__book {
+      display: none;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.5rem;
+      background: var(--mauve-deep);
+      color: #f4efe6;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    @media (min-width: 768px) { .nav__book { display: inline-block; } }
+    .nav__book:hover { background: var(--mauve); }
+
+    /* Burger */
+    .nav__burger {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    @media (min-width: 768px) { .nav__burger { display: none; } }
+    .nav__burger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: rgba(244,239,230,0.85);
+      transition: transform 0.35s var(--ease), opacity 0.3s, background 0.4s;
+    }
+    .nav.scrolled .nav__burger span { background: var(--ink-2); }
+    .nav__burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__burger.open span:nth-child(2) { opacity: 0; }
+    .nav__burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0; right: 0;
+      z-index: 99;
+      background: rgba(244, 239, 230, 0.98);
+      backdrop-filter: blur(16px);
+      padding: 0 clamp(1.25rem, 5vw, 4rem);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s var(--ease), padding 0.45s;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu.open {
+      max-height: 100vh;
+      padding-top: 2.5rem;
+      padding-bottom: 3rem;
+    }
+    .mobile-menu ul { list-style: none; }
+    .mobile-menu a {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 300;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--mauve); }
+    .mobile-menu .mobile-cta {
+      display: inline-block;
+      margin-top: 2rem;
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 1rem 2rem;
+      background: var(--mauve-deep);
+      color: #f4efe6;
+      text-decoration: none;
+    }
+
+    /* ── Hero (video — dark stays dark) ─────────────── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      background: #1a1612;
+    }
+    .hero video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .hero__overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      background: linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 65%);
+    }
+    .hero__overlay::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 45%;
+      background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+    }
+    .hero__content {
+      position: absolute;
+      bottom: 0; left: 0;
+      z-index: 2;
+      padding: 0 clamp(1.25rem, 6vw, 6rem) clamp(4rem, 8vw, 8rem);
+      max-width: 800px;
+    }
+    .hero__eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+    }
+    .hero__eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--gold-dim);
+      flex-shrink: 0;
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1;
+      color: #f4efe6;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold-light); }
+    .hero p {
+      font-size: clamp(0.88rem, 1.4vw, 1rem);
+      font-weight: 300;
+      color: rgba(244,239,230,0.72);
+      max-width: 42ch;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .hero__btns { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.95rem 2.2rem;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn--fill { background: var(--mauve-deep); color: #f4efe6; }
+    .btn--fill:hover { background: var(--mauve); }
+    .btn--outline {
+      background: transparent;
+      color: var(--ink-2);
+      border: 1px solid var(--border-mid);
+    }
+    .btn--outline:hover { border-color: var(--mauve); color: var(--mauve); }
+    .btn--outline-light {
+      background: transparent;
+      color: rgba(244,239,230,0.8);
+      border: 1px solid rgba(244,239,230,0.3);
+    }
+    .btn--outline-light:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+    }
+
+    /* ── Metrics ─────────────────────────────────────── */
+    .metrics {
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.8rem clamp(1.25rem, 5vw, 4rem);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 2rem;
+    }
+    .metric {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    .metric__num {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .metric__label {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      line-height: 1.4;
+    }
+
+    /* ── Section base ────────────────────────────────── */
+    .section {
+      padding: clamp(4.5rem, 8vw, 8rem) clamp(1.25rem, 6vw, 6rem);
+    }
+    .section--alt { background: var(--bg-2); }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--gold-dim);
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+    }
+    .section-title em { font-style: italic; color: var(--mauve); }
+
+    /* ── Services ────────────────────────────────────── */
+    .services-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(3rem, 6vw, 5rem);
+    }
+    @media (min-width: 900px) {
+      .services-layout { grid-template-columns: 5fr 6fr; gap: 6rem; align-items: start; }
+    }
+
+    .services-intro p {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--ink-3);
+      max-width: 38ch;
+      margin-bottom: 2.5rem;
+    }
+
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: padding-left 0.3s var(--ease);
+    }
+    .service-row:first-child { border-top: 1px solid var(--border); }
+    .service-row:hover { padding-left: 0.75rem; }
+    .service-row__name {
+      font-family: var(--font-serif);
+      font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+      font-weight: 400;
+      color: var(--ink);
+      display: block;
+      transition: color 0.2s;
+    }
+    .service-row:hover .service-row__name { color: var(--mauve); }
+    .service-row__sub {
+      font-size: 0.67rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-4);
+      display: block;
+      margin-top: 0.15rem;
+    }
+    .service-row__price {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── About ───────────────────────────────────────── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(3rem, 6vw, 6rem);
+      align-items: center;
+    }
+    @media (min-width: 900px) {
+      .about-layout { grid-template-columns: 1fr 1fr; }
+    }
+
+    .about-img {
+      position: relative;
+      padding-bottom: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .about-img__box {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--bg-3);
+    }
+    .about-img__box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s var(--ease);
+    }
+    .about-img:hover .about-img__box img { transform: scale(1.03); }
+    .about-img__badge {
+      position: absolute;
+      bottom: 0; right: 0;
+      background: var(--mauve-deep);
+      padding: 1.5rem 1.8rem;
+      text-align: center;
+      min-width: 130px;
+    }
+    .about-img__badge strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: #f4efe6;
+      line-height: 1;
+    }
+    .about-img__badge span {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(244,239,230,0.65);
+    }
+
+    .about-text { display: flex; flex-direction: column; gap: 1.4rem; }
+    .about-text p {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--ink-3);
+    }
+
+    blockquote.pull {
+      border-left: 2px solid var(--gold-dim);
+      padding-left: 1.5rem;
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.85rem;
+      border: 1px solid var(--border-mid);
+      color: var(--ink-3);
+    }
+
+    /* ── Testimonials — shadcn card style ───────────── */
+    .testimonials-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: clamp(2.5rem, 4vw, 4rem);
+    }
+
+    /* 3-col grid matching the React component layout */
+    .tgrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 640px) { .tgrid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .tgrid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    /* Middle card on md: spans 2 cols, on lg: back to 1 */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .tcard--quote { grid-column: span 2; }
+    }
+
+    /* shadcn-inspired card */
+    .tcard {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s;
+    }
+    .tcard:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(40,33,26,0.12);
+    }
+
+    /* Quote-type card: no bg, no border, centered */
+    .tcard--quote {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      align-items: center;
+      text-align: center;
+    }
+    .tcard--quote:hover { transform: none; box-shadow: none; }
+
+    /* Quote SVG icon */
+    .tcard__quote-icon {
+      width: 48px;
+      height: 36px;
+      color: var(--ink-4);
+      flex-shrink: 0;
+    }
+    .tcard--quote .tcard__quote-icon { color: rgba(40,33,26,0.2); }
+
+    /* Card body text */
+    .tcard__quote {
+      font-size: clamp(0.88rem, 1.4vw, 0.95rem);
+      line-height: 1.75;
+      color: var(--ink-3);
+      flex: 1;
+    }
+    .tcard--quote .tcard__quote {
+      font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* Avatar + meta row */
+    .tcard__footer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: auto;
+      padding-top: 0.5rem;
+    }
+    .tcard__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-2);
+      flex-shrink: 0;
+    }
+    .tcard__avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tcard__name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .tcard__role {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      margin-top: 0.1rem;
+    }
+
+    /* ── CTA band ────────────────────────────────────── */
+    .cta-band {
+      background: var(--bg-3);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.25rem, 6vw, 6rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .cta-band h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--ink);
+      max-width: 16ch;
+    }
+    .cta-band h2 em { font-style: italic; color: var(--mauve); }
+    .cta-band p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--ink-3);
+      max-width: 40ch;
+    }
+    .cta-band__btns { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+
+    /* ── Contact ─────────────────────────────────────── */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+    @media (min-width: 900px) {
+      .contact-layout { grid-template-columns: 5fr 7fr; }
+    }
+
+    .contact-info { display: flex; flex-direction: column; gap: 2.5rem; }
+
+    .contact-detail h3 {
+      font-size: 0.64rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+    .contact-detail p,
+    .contact-detail a {
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      font-weight: 300;
+      color: var(--ink-2);
+      text-decoration: none;
+      line-height: 1.65;
+      transition: color 0.2s;
+    }
+    .contact-detail a:hover { color: var(--mauve); }
+
+    .hours { display: flex; flex-direction: column; gap: 0.4rem; }
+    .hours__row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      color: var(--ink-3);
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hours__row span:first-child { color: var(--ink-2); }
+
+    /* Form */
+    .form { display: flex; flex-direction: column; gap: 1.1rem; }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+    @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field label {
+      font-size: 0.64rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: var(--card-bg);
+      border: 1px solid var(--border-mid);
+      padding: 0.85rem 1rem;
+      width: 100%;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      border-radius: 0;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--ink-4); }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--mauve);
+      box-shadow: 0 0 0 3px rgba(155,107,122,0.12);
+    }
+    .field select option { background: var(--card-bg); color: var(--ink); }
+    .field textarea { resize: vertical; min-height: 110px; }
+
+    .form__submit {
+      align-self: flex-start;
+      margin-top: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 1.05rem 2.5rem;
+      background: var(--mauve-deep);
+      color: #f4efe6;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .form__submit:hover { background: var(--mauve); transform: translateY(-2px); }
+    .form__submit:disabled { background: #c4a4ab; cursor: default; transform: none; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid var(--border);
+      padding: clamp(3.5rem, 6vw, 5rem) clamp(1.25rem, 6vw, 6rem) 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    @media (min-width: 640px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .footer-grid { grid-template-columns: 2.5fr 1fr 1fr 1fr; } }
+
+    .footer-brand__logo {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f4efe6;
+      margin-bottom: 0.9rem;
+    }
+    .footer-brand__desc {
+      font-size: 0.84rem;
+      line-height: 1.8;
+      color: rgba(244,239,230,0.45);
+      max-width: 28ch;
+      margin-bottom: 1.5rem;
+    }
+    .footer-socials { display: flex; gap: 0.6rem; }
+    .footer-socials a {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(244,239,230,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(244,239,230,0.45);
+      text-decoration: none;
+      font-size: 0.68rem;
+      font-weight: 500;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .footer-socials a:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+
+    .footer-col h4 {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .footer-col a {
+      font-size: 0.84rem;
+      color: rgba(244,239,230,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: rgba(244,239,230,0.8); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(244,239,230,0.08);
+      padding-top: 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .footer-bottom p { font-size: 0.7rem; color: rgba(244,239,230,0.25); }
+
+    /* ── Scroll reveal ───────────────────────────────── */
+    .rv {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .js-ready .rv.will-animate { opacity: 0; transform: translateY(22px); }
+    .js-ready .rv.in { opacity: 1; transform: none; }
+    .rv-d1 { transition-delay: 0.1s; }
+    .rv-d2 { transition-delay: 0.22s; }
+    .rv-d3 { transition-delay: 0.36s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .js-ready .rv.will-animate { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#home" class="nav__logo">Lumière</a>
+    <ul class="nav__links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav__book">Book Now</a>
+    <button class="nav__burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
+      <li><a href="#home" class="m-link">Home</a></li>
+      <li><a href="#services" class="m-link">Services</a></li>
+      <li><a href="#about" class="m-link">About</a></li>
+      <li><a href="#testimonials" class="m-link">Reviews</a></li>
+      <li><a href="#contact" class="m-link">Contact</a></li>
+    </ul>
+    <a href="#contact" class="mobile-cta m-link">Book an Appointment &rarr;</a>
+  </div>
+
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <video autoplay muted loop playsinline>
+      <source src="ASSESTS/Untitled Project - video.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <div class="hero__eyebrow">Premium Nail Atelier &middot; Est. 2018</div>
+      <h1>Where nails<br>become <em>art</em></h1>
+      <p>Precision craftsmanship, curated experiences, and enduring beauty — tailored entirely to you.</p>
+      <div class="hero__btns">
+        <a href="#contact" class="btn btn--fill">Book Your Appointment</a>
+        <a href="#services" class="btn btn--outline-light">View Services</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- METRICS -->
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric__num">6+</span>
+      <span class="metric__label">Years of craft</span>
+    </div>
+    <div class="metric">
+      <span class="metric__num">2,000+</span>
+      <span class="metric__label">Happy clients</span>
+    </div>
+    <div class="metric">
+      <span class="metric__num">20+</span>
+      <span class="metric__label">Services offered</span>
+    </div>
+    <div class="metric">
+      <span class="metric__num">100%</span>
+      <span class="metric__label">Cruelty-free</span>
+    </div>
+  </div>
+
+
+  <!-- SERVICES -->
+  <section id="services" class="section section--alt">
+    <div class="services-layout">
+      <div class="services-intro">
+        <p class="eyebrow rv">Services</p>
+        <h2 class="section-title rv rv-d1">Every detail,<br><em>perfected</em></h2>
+        <p class="rv rv-d2">From classic manicures to intricate nail art, every service is performed with premium cruelty-free products and meticulous care.</p>
+        <a href="#contact" class="btn btn--fill rv rv-d3">Book a Service</a>
+      </div>
+      <div>
+        <a href="#contact" class="service-row rv">
+          <div><span class="service-row__name">Classic Manicure</span><span class="service-row__sub">Shape · Cuticle care · Polish</span></div>
+          <span class="service-row__price">from $35</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d1">
+          <div><span class="service-row__name">Gel Manicure</span><span class="service-row__sub">Long-lasting · Chip-free</span></div>
+          <span class="service-row__price">from $50</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d1">
+          <div><span class="service-row__name">Nail Extensions</span><span class="service-row__sub">Acrylic · Polygel · Builder</span></div>
+          <span class="service-row__price">from $75</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d2">
+          <div><span class="service-row__name">Nail Art &amp; Design</span><span class="service-row__sub">Custom · Seasonal · Bespoke</span></div>
+          <span class="service-row__price">from $15+</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d2">
+          <div><span class="service-row__name">Spa Pedicure</span><span class="service-row__sub">Soak · Scrub · Massage · Polish</span></div>
+          <span class="service-row__price">from $65</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d3">
+          <div><span class="service-row__name">Paraffin Treatment</span><span class="service-row__sub">Deep moisturizing · Softening</span></div>
+          <span class="service-row__price">from $20</span>
+        </a>
+        <a href="#contact" class="service-row rv rv-d3">
+          <div><span class="service-row__name">Nail Repair</span><span class="service-row__sub">Single nail · Full set restoration</span></div>
+          <span class="service-row__price">from $10</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="about-layout">
+      <div class="about-img rv">
+        <div class="about-img__box">
+          <img src="ASSESTS/nailSalon.png" alt="Inside the Lumière nail atelier" />
+        </div>
+        <div class="about-img__badge">
+          <strong>6</strong>
+          <span>years of excellence</span>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <div>
+          <p class="eyebrow rv">About Lumière</p>
+          <h2 class="section-title rv rv-d1">Crafted with<br><em>intention</em></h2>
+        </div>
+        <blockquote class="pull rv rv-d2">
+          "We believe beautiful nails are more than a finishing touch — they're an expression of who you are."
+        </blockquote>
+        <p class="rv rv-d2">Lumière was born from a passion for the art of nail care. Founded in 2018, our atelier has been a sanctuary where precision meets creativity. Our team of trained nail artists brings years of expertise and genuine love for their craft to every appointment.</p>
+        <p class="rv rv-d3">We use only premium, cruelty-free products and maintain the highest sanitation standards. Whether you visit for a quick refresh or a full transformation, every client receives our undivided attention and care.</p>
+        <div class="tags rv rv-d3">
+          <span class="tag">Cruelty-Free</span>
+          <span class="tag">Vegan Products</span>
+          <span class="tag">Licensed Technicians</span>
+          <span class="tag">Sterilized Tools</span>
+          <span class="tag">Luxury Experience</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- TESTIMONIALS — shadcn-style card layout -->
+  <section id="testimonials" class="section section--alt">
+    <div class="testimonials-header">
+      <div>
+        <p class="eyebrow rv">Client Stories</p>
+        <h2 class="section-title rv rv-d1">What our clients<br><em>say</em></h2>
+      </div>
+      <a href="#contact" class="btn btn--fill rv rv-d2">Join Them</a>
+    </div>
+
+    <div class="tgrid">
+
+      <!-- user card -->
+      <article class="tcard rv">
+        <p class="tcard__quote">"Lumière is the only place I trust with my nails. My gel manicure lasted nearly four weeks without a single chip. The entire experience felt like a genuine treat, not just an appointment."</p>
+        <div class="tcard__footer">
+          <div class="tcard__avatar" aria-hidden="true">SM</div>
+          <div>
+            <div class="tcard__name">Sophia Martínez</div>
+            <div class="tcard__role">Gel Manicure · Regular Client</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- quote card (center, no border/bg) -->
+      <article class="tcard tcard--quote rv rv-d1">
+        <svg class="tcard__quote-icon" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M14.9951 36C12.4951 36 10.2285 35.0167 8.19513 33.05C6.1618 31.0833 5.14513 28.8333 5.14513 26.3C5.14513 22.8 6.2118 19.4833 8.34513 16.35C10.4785 13.2167 13.2285 10.1 16.5951 7L21.4951 11.25C19.3618 13.1333 17.6785 14.8833 16.4451 16.5C15.2118 18.1167 14.5951 19.9833 14.5951 22.1H19.9951V36H14.9951ZM37.9951 36C35.4951 36 33.2285 35.0167 31.1951 33.05C29.1618 31.0833 28.1451 28.8333 28.1451 26.3C28.1451 22.8 29.2118 19.4833 31.3451 16.35C33.4785 13.2167 36.2285 10.1 39.5951 7L44.4951 11.25C42.3618 13.1333 40.6785 14.8833 39.4451 16.5C38.2118 18.1167 37.5951 19.9833 37.5951 22.1H42.9951V36H37.9951Z" fill="currentColor"/>
+        </svg>
+        <p class="tcard__quote">"I feel much more confident leaving Lumière than I've ever felt anywhere else. The artistry is extraordinary — they bring your vision to life in ways you never imagined."</p>
+      </article>
+
+      <!-- user card -->
+      <article class="tcard rv rv-d2">
+        <p class="tcard__quote">"I've been to dozens of salons. Lumière is in a completely different league. Serene environment, top quality products, and technicians who truly care. This is the standard I hold everyone else to."</p>
+        <div class="tcard__footer">
+          <div class="tcard__avatar" aria-hidden="true">AO</div>
+          <div>
+            <div class="tcard__name">Amara Osei</div>
+            <div class="tcard__role">Spa Pedicure · Monthly Client</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- user card -->
+      <article class="tcard rv">
+        <p class="tcard__quote">"The paraffin treatment alone is worth every visit. My hands felt completely renewed, and the technician remembered my preferences from last time — that personal touch makes all the difference."</p>
+        <div class="tcard__footer">
+          <div class="tcard__avatar" aria-hidden="true">PK</div>
+          <div>
+            <div class="tcard__name">Priya Kapoor</div>
+            <div class="tcard__role">Manicure + Paraffin</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- user card -->
+      <article class="tcard rv rv-d1">
+        <p class="tcard__quote">"My daughter and I come here every month. The space is beautiful, the staff always makes us feel welcome, and results are consistently stunning. We wouldn't go anywhere else."</p>
+        <div class="tcard__footer">
+          <div class="tcard__avatar" aria-hidden="true">DF</div>
+          <div>
+            <div class="tcard__name">Diana Flores</div>
+            <div class="tcard__role">Pedicure · Loyal Client Since 2020</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- user card -->
+      <article class="tcard rv rv-d2">
+        <p class="tcard__quote">"Finally found a place that takes nail health seriously. The sanitization is impeccable and the products are the cleanest I've seen. My nails have never looked or felt healthier."</p>
+        <div class="tcard__footer">
+          <div class="tcard__avatar" aria-hidden="true">NV</div>
+          <div>
+            <div class="tcard__name">Nadia Volkov</div>
+            <div class="tcard__role">Nail Extensions · Biweekly Client</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- CTA BAND -->
+  <div class="cta-band">
+    <p class="eyebrow rv">New Clients — 15% Off First Visit</p>
+    <h2 class="rv rv-d1">Ready for your<br><em>best nails</em> yet?</h2>
+    <p class="rv rv-d2">Book your appointment today and experience the Lumière difference. New clients receive 15% off their first visit — no code needed.</p>
+    <div class="cta-band__btns rv rv-d3">
+      <a href="#contact" class="btn btn--fill">Book Now</a>
+      <a href="tel:+15555550199" class="btn btn--outline">Call Us</a>
+    </div>
+  </div>
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="contact-layout">
+      <div class="contact-info">
+        <div>
+          <p class="eyebrow rv">Get in Touch</p>
+          <h2 class="section-title rv rv-d1">Let's create<br><em>something</em><br>beautiful</h2>
+        </div>
+        <div class="contact-detail rv rv-d1">
+          <h3>Location</h3>
+          <p>123 Elegance Avenue, Suite 4B<br>Beverly Hills, CA 90210</p>
+        </div>
+        <div class="contact-detail rv rv-d2">
+          <h3>Phone &amp; Email</h3>
+          <a href="tel:+15555550199">(555) 555-0199</a><br>
+          <a href="mailto:hello@lumierenails.com">hello@lumierenails.com</a>
+        </div>
+        <div class="contact-detail rv rv-d2">
+          <h3>Hours</h3>
+          <div class="hours">
+            <div class="hours__row"><span>Mon – Fri</span><span>9:00 am – 7:00 pm</span></div>
+            <div class="hours__row"><span>Saturday</span><span>9:00 am – 6:00 pm</span></div>
+            <div class="hours__row"><span>Sunday</span><span>11:00 am – 5:00 pm</span></div>
+          </div>
+        </div>
+      </div>
+
+      <form class="form rv rv-d1" id="booking-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="fn">First Name</label>
+            <input type="text" id="fn" name="first-name" placeholder="Jane" required autocomplete="given-name" />
+          </div>
+          <div class="field">
+            <label for="ln">Last Name</label>
+            <input type="text" id="ln" name="last-name" placeholder="Doe" required autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="em">Email</label>
+            <input type="email" id="em" name="email" placeholder="jane@example.com" required autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="ph">Phone</label>
+            <input type="tel" id="ph" name="phone" placeholder="(555) 000-0000" autocomplete="tel" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="svc">Service</label>
+          <select id="svc" name="service">
+            <option value="" disabled selected>Select a service&hellip;</option>
+            <option>Classic Manicure</option>
+            <option>Gel Manicure</option>
+            <option>Nail Extensions</option>
+            <option>Nail Art &amp; Design</option>
+            <option>Spa Pedicure</option>
+            <option>Paraffin Treatment</option>
+            <option>Nail Repair</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="dt">Preferred Date</label>
+            <input type="date" id="dt" name="date" />
+          </div>
+          <div class="field">
+            <label for="tm">Preferred Time</label>
+            <select id="tm" name="time">
+              <option value="" disabled selected>Select time&hellip;</option>
+              <option>9:00 AM</option><option>10:00 AM</option>
+              <option>11:00 AM</option><option>12:00 PM</option>
+              <option>1:00 PM</option><option>2:00 PM</option>
+              <option>3:00 PM</option><option>4:00 PM</option>
+              <option>5:00 PM</option><option>6:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="msg">Notes (optional)</label>
+          <textarea id="msg" name="message" placeholder="Any special requests, allergies, or questions?"></textarea>
+        </div>
+        <button type="submit" class="form__submit" id="submit-btn">Request Appointment</button>
+      </form>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand__logo">Lumière</div>
+        <p class="footer-brand__desc">Premium nail artistry in the heart of Beverly Hills. Where precision meets beauty, every appointment.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="TikTok">TK</a>
+          <a href="#" aria-label="Pinterest">PT</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Manicures</a></li>
+          <li><a href="#services">Gel &amp; Dip</a></li>
+          <li><a href="#services">Extensions</a></li>
+          <li><a href="#services">Nail Art</a></li>
+          <li><a href="#services">Pedicures</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <ul>
+          <li><a href="#about">Our Story</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#contact">Book Now</a></li>
+          <li><a href="#contact">Gift Cards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Visit Us</h4>
+        <ul>
+          <li><a href="tel:+15555550199">(555) 555-0199</a></li>
+          <li><a href="mailto:hello@lumierenails.com">hello@lumierenails.com</a></li>
+          <li><a href="#contact">123 Elegance Ave<br>Beverly Hills, CA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Lumière Nail Atelier. All rights reserved.</p>
+      <p>Privacy &middot; Terms</p>
+    </div>
+  </footer>
+
+
+  <script>
+    document.documentElement.classList.add('js-ready');
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // Mobile menu
+    const burger = document.getElementById('burger');
+    const menu   = document.getElementById('mobile-menu');
+    let isOpen   = false;
+    burger.addEventListener('click', () => {
+      isOpen = !isOpen;
+      burger.classList.toggle('open', isOpen);
+      burger.setAttribute('aria-expanded', isOpen);
+      menu.classList.toggle('open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    document.querySelectorAll('.m-link').forEach(el =>
+      el.addEventListener('click', () => {
+        isOpen = false;
+        burger.classList.remove('open');
+        menu.classList.remove('open');
+        document.body.style.overflow = '';
+      })
+    );
+
+    // Scroll reveal
+    const rvEls = document.querySelectorAll('.rv');
+    rvEls.forEach(el => el.classList.add('will-animate'));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -24px 0px' });
+    rvEls.forEach(el => observer.observe(el));
+
+    // Form
+    const form   = document.getElementById('booking-form');
+    const subBtn = document.getElementById('submit-btn');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      subBtn.textContent = 'Request Sent \u2713';
+      subBtn.disabled = true;
+      setTimeout(() => {
+        subBtn.textContent = 'Request Appointment';
+        subBtn.disabled = false;
+        form.reset();
+      }, 4000);
+    });
+  </script>
+</body>
+</html>
