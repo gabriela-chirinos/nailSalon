@@ -1,6 +1,6 @@
 https://gabriela-chirinos.github.io/nailSalon/
 
-![Landing Page Demo](./assets/preview.gif)
+![nailSalon](./assets/preview.gif)
 
 
 
