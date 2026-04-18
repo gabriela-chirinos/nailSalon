@@ -1,5 +1,8 @@
 https://gabriela-chirinos.github.io/nailSalon/
 
+![Landing Page Demo](./assets/preview.gif)
+
+
 
 Project Overview: Lumière Premium Nail Salon
 
